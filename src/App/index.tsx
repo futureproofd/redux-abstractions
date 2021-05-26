@@ -6,6 +6,8 @@ import React, {
   useState,
 } from "react";
 import { useSelector, useDispatch } from "react-redux";
+// old way:
+/*
 import {
   createTodoActionCreator,
   editTodoActionCreator,
@@ -13,7 +15,17 @@ import {
   deleteTodoActionCreator,
   selectTodoActionCreator,
 } from "../redux-og";
-import { State, Todo } from "../type";
+*/
+
+// redux-toolkit way:
+import {
+  createTodoActionCreator,
+  editTodoActionCreator,
+  toggleTodoActionCreator,
+  deleteTodoActionCreator,
+  selectTodoActionCreator,
+} from "../redux-toolkit";
+import { State } from "../type";
 import "./App.css";
 
 const App = function() {
