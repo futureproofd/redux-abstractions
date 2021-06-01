@@ -1,6 +1,8 @@
 import { v1 as uuid } from "uuid";
 import { Todo } from "./type";
-import { combineReducers, createStore, applyMiddleware, compose } from 'redux';
+import { combineReducers, createStore, applyMiddleware } from 'redux';
+import createSagaMiddleware from 'redux-saga';
+import rootSaga from '../src/sagas';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 import { composeWithDevTools } from 'redux-devtools-extension';
@@ -10,6 +12,7 @@ const EDIT_TODO = 'EDIT_TODO';
 const TOGGLE_TODO = 'TOGGLE_TODO';
 const DELETE_TODO = 'DELETE_TODO';
 const SELECT_TODO = 'SELECT_TODO';
+const SAGA_INCREMENT = 'SAGA_INCREMENT';
 
 interface CreateTodoActionType {
   type: typeof CREATE_TODO;
@@ -33,6 +36,11 @@ interface DeleteTodoActionType {
 
 interface SelectTodoActionType {
   type: typeof SELECT_TODO;
+  payload: { id: string }
+}
+
+interface SagaIncrementActionType {
+  type: typeof SAGA_INCREMENT;
   payload: { id: string }
 }
 
@@ -111,7 +119,8 @@ const todosInitialState: Todo[] = [
   }
 ];
 
-type TodoActionTypes = CreateTodoActionType | DeleteTodoActionType | EditTodoActionType | ToggleTodoActionType;
+type TodoActionTypes = CreateTodoActionType | DeleteTodoActionType | EditTodoActionType | ToggleTodoActionType | SagaIncrementActionType;
+
 const todosReducer = (state: Todo[] = todosInitialState, action: TodoActionTypes) => {
   switch (action.type) {
     case CREATE_TODO: {
@@ -162,11 +171,16 @@ const counterReducer = (state: number = 0, action: TodoActionTypes) => {
     case DELETE_TODO: {
       return state + 1;
     }
+    case SAGA_INCREMENT: {
+      return state + 2;
+    }
     default: {
       return state;
     }
   }
 }
+
+const sagaMiddleware = createSagaMiddleware();
 
 // Combine reducers (via redux)
 const reducers = combineReducers({
@@ -178,5 +192,9 @@ const reducers = combineReducers({
 // Store w/o composeWithDevTools (since we normally need to specify devTools to get proper debugging)
 //export default createStore(reducers, compose(applyMiddleware(thunk, logger)))
 
-// Store
-export default createStore(reducers, composeWithDevTools(applyMiddleware(thunk, logger)))
+// Store - additional sagaMiddleWare:
+const store = createStore(reducers, composeWithDevTools(applyMiddleware(sagaMiddleware, thunk, logger)))
+
+sagaMiddleware.run(rootSaga);
+
+export default store;
