@@ -1,6 +1,8 @@
-This is the starting place in conjunction with my **Redux Toolkit** comparison video. Please start here. NOTE: no dependencies related to Redux are installed here! Please follow along in the video and add them with me!
+Adapted from the redux toolkit comparison video.
 
-<img src="image.png" alt="app" style="margin-left: 15px;" />
+## Branches
+
+See each branch for examples which deviate from the standard redux implementation (i.e. redux-saga)
 
 ## How did I create this project?
 
